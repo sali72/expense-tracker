@@ -29,7 +29,7 @@ class User(Document, UserBase):
         use_state_management = True
         
     class config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
                 "expense_ids": [
@@ -98,7 +98,7 @@ class Expense(Document, ExpenseBase):
         use_state_management = True
 
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "amount": 29.99,
                 "tag": "food",
