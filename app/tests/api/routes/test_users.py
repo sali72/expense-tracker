@@ -28,3 +28,22 @@ def test_create_user(client: TestClient):
     assert data["id"] == user_id
     assert data["expense_ids"] == []
     
+
+def test_create_duplicate_user(client: TestClient):
+    # Generate a valid UUID
+    user_id = str(uuid4())
+    
+    # Create the user first time
+    response = client.post(
+        "/users/", json={"id": user_id, "expense_ids": []}
+    )
+    assert response.status_code == 200
+    
+    # Attempt to create the same user again
+    response = client.post(
+        "/users/", json={"id": user_id, "expense_ids": []}
+    )
+    
+    # Check that we get a 400 error
+    assert response.status_code == 400
+    
