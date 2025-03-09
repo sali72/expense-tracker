@@ -4,7 +4,7 @@ from typing import List
 from uuid import UUID, uuid4
 
 from beanie import Document
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class UserBase(BaseModel):
@@ -24,13 +24,9 @@ class UserPublic(UserBase):
 
 class User(Document, UserBase):
     id: UUID = Field(..., description="User ID")
-    class Settings:
-        name = "users"
-        use_state_management = True
-        use_uuid_representation = True
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
                 "expense_ids": [
@@ -39,6 +35,12 @@ class User(Document, UserBase):
                 ],
             }
         }
+    )
+
+    class Settings:
+        name = "users"
+        use_state_management = True
+        use_uuid_representation = True
 
 
 class Message(BaseModel):
@@ -94,12 +96,8 @@ class Expense(Document, ExpenseBase):
     id: UUID = Field(default_factory=uuid4, description="Expense ID")
     user_id: UUID = Field(..., description="User ID")
 
-    class Settings:
-        name = "expenses"
-        use_state_management = True
-
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "amount": 29.99,
                 "tag": "food",
@@ -107,3 +105,8 @@ class Expense(Document, ExpenseBase):
                 "user_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
             }
         }
+    )
+
+    class Settings:
+        name = "expenses"
+        use_state_management = True
