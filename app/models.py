@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 
 
 class UserBase(BaseModel):
-    id: UUID = Field(default_factory=uuid4, description="User ID")
+    id: UUID = Field(..., description="User ID")
     expense_ids: List[UUID] = Field(
         default_factory=list, description="List of user's expense IDs"
     )
@@ -23,12 +23,13 @@ class UserPublic(UserBase):
 
 
 class User(Document, UserBase):
-
+    id: UUID = Field(..., description="User ID")
     class Settings:
         name = "users"
         use_state_management = True
-        
-    class config:
+        use_uuid_representation = True
+
+    class Config:
         json_schema_extra = {
             "example": {
                 "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
