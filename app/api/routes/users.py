@@ -30,9 +30,9 @@ async def create_user(user_in: UserCreate, session: Session = Depends(get_db)) -
 
 
 @router.delete("/", response_model=Message)
-async def delete_user(user_id: UUID, session: Session = Depends(get_db)):
-    user = await users.get_user(user_id=user_id, session=session)
+async def delete_user(id: UUID, session: Session = Depends(get_db)) -> Any:
+    user = await users.get_user(user_id=id, session=session)
     if not user:
         raise HTTPException(status_code=404, detail="user not found")
-    await users.delete_user(user_id=user_id, session=session)
+    await users.delete_user(user_id=id, session=session)
     return Message(message="user deleted")
