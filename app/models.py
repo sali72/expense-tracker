@@ -43,9 +43,6 @@ class User(Document, UserBase):
         use_uuid_representation = True
 
 
-class Message(BaseModel):
-    message: str
-
 
 class ExpenseTag(str, Enum):
     FOOD = "food"
@@ -110,3 +107,10 @@ class Expense(Document, ExpenseBase):
     class Settings:
         name = "expenses"
         use_state_management = True
+
+class Message(BaseModel):
+    message: str
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
