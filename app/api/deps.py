@@ -7,11 +7,11 @@ from fastapi.security import OAuth2PasswordBearer
 from jwt.exceptions import InvalidTokenError
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from pydantic import ValidationError
-
+import logging
 from app.core.config import settings
 from app.core.db import get_client
 
-
+logger = logging.getLogger(__name__)
 async def get_db() -> AsyncGenerator[AsyncIOMotorClientSession, None, None]:
     """
     Asynchronous generator dependency that yields a new MongoDB session.
@@ -28,13 +28,17 @@ SessionDep = Annotated[AsyncIOMotorClientSession, Depends(get_db)]
 TokenDep = Annotated[str, Depends(reusable_oauth2)]
 
 
-def authenticate_user(token: TokenDep) -> None:
+def get_token(token: TokenDep) -> None:
     try:
         payload = jwt.decode(
             token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
         )
+        
     except (InvalidTokenError, ValidationError):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Could not validate credentials",
         )
+    return payload["sub"]
+
+UserIDDep = Annotated[str, Depends(get_token)]

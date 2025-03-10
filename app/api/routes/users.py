@@ -4,19 +4,19 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 from motor.motor_asyncio import AsyncIOMotorClientSession as Session
 
-from app.api.deps import authenticate_user, get_db
+from app.api.deps import get_db, UserIDDep
 from app.crud import users
 from app.models import Message, UserCreate, UserPublic
 
 router = APIRouter(prefix="/users", tags=["users"])
 
 
-@router.get("/test-auth", dependencies=[Depends(authenticate_user)])
-def test() -> Any:
+@router.get("/test-auth")
+def test(user_id: UserIDDep) -> Any:
     """
-    Get current user.
+    Get current user id.
     """
-    return "Auth test successful"
+    return f"Auth test successful for user {user_id}"
 
 
 @router.post("/", response_model=UserPublic)
