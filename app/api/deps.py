@@ -28,7 +28,7 @@ SessionDep = Annotated[AsyncIOMotorClientSession, Depends(get_db)]
 TokenDep = Annotated[str, Depends(reusable_oauth2)]
 
 
-def get_token(token: TokenDep) -> None:
+def get_token(token: TokenDep) -> str:
     try:
         payload = jwt.decode(
             token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
