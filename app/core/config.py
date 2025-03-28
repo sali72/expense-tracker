@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings
+from pydantic import ConfigDict
 
 
 class Settings(BaseSettings):
@@ -10,8 +11,7 @@ class Settings(BaseSettings):
     AUTH_SERVICE_URL: str = "http://127.0.0.1:5000"
     AUTH_SERVICE_TOKEN_URL: str = f"{AUTH_SERVICE_URL}/api/v1/login/access-token"
 
-    class Config:
-        env_file = ".env"
+    model_config = ConfigDict(env_file=".env")
 
 
 settings = Settings()
