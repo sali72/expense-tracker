@@ -55,7 +55,7 @@ def mock_token():
     """
     Provides a mock JWT token for testing without auth service dependency.
     """
-    yield "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDM4NjQwMzksInN1YiI6ImFhOTA5MjFmLWQ2YjktNDhkOC05M2M2LWZjYTg5M2ZjMGNiMCJ9.Hl6cd7KsH-gGrjVZsjE0txs26qm6jsMzMrUfh0lQwpI"
+    yield settings.MOCK_TOKEN
 
 
 @pytest.fixture(scope="session")
