@@ -20,7 +20,7 @@ async def get_expenses(*, user_id: UUID, session) -> list[Expense]:
     """
     Get all expenses for a user.
     """
-    return await Expense.find(user_id=user_id, session=session)
+    return await Expense.find({"user_id": user_id}, session=session).to_list()
 
 
 async def get_expense(*, expense_id: UUID, session) -> Expense:

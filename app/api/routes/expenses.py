@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, List
 
 from fastapi import APIRouter, Depends
 from motor.motor_asyncio import AsyncIOMotorClientSession as Session
@@ -19,3 +19,11 @@ async def create_expense(
     """
     expense = await expenses.create_expense(expense_in=expense_in, session=session, user_id=user_id)
     return expense
+
+
+@router.get("/", response_model=List[ExpensePublic])
+async def get_expenses(user_id: UserIDDep, session: Session = Depends(get_db)) -> Any:
+    """
+    Get all expenses for a user.
+    """
+    return await expenses.get_expenses(user_id=user_id, session=session)
