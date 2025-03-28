@@ -23,3 +23,9 @@ def test_create_expense(client: TestClient, auth_headers: dict):
     assert data["amount"] == 100
     assert data["description"] == "Test expense"
 
+
+def test_get_expenses(client: TestClient, auth_headers: dict):
+    response = client.get("/expenses/", headers=auth_headers)
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 0
