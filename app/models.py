@@ -107,6 +107,7 @@ class Expense(Document, ExpenseBase):
     class Settings:
         name = "expenses"
         use_state_management = True
+        use_uuid_representation = True
 
 class Message(BaseModel):
     message: str

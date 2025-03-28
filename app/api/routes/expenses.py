@@ -1,6 +1,6 @@
 from typing import Any, List
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from motor.motor_asyncio import AsyncIOMotorClientSession as Session
 
 from app.api.deps import UserIDDep, get_db
@@ -17,7 +17,9 @@ async def create_expense(
     """
     Create an expense.
     """
-    expense = await expenses.create_expense(expense_in=expense_in, session=session, user_id=user_id)
+    expense = await expenses.create_expense(
+        expense_in=expense_in, session=session, user_id=user_id
+    )
     return expense
 
 
@@ -27,3 +29,18 @@ async def get_expenses(user_id: UserIDDep, session: Session = Depends(get_db)) -
     Get all expenses for a user.
     """
     return await expenses.get_expenses(user_id=user_id, session=session)
+
+
+@router.get("/{expense_id}", response_model=ExpensePublic)
+async def get_expense(
+    expense_id: str, user_id: UserIDDep, session: Session = Depends(get_db)
+) -> Any:
+    """
+    Get an expense by id.
+    """
+    expense = await expenses.get_expense_for_user(
+        expense_id=expense_id, user_id=user_id, session=session
+    )
+    if not expense:
+        raise HTTPException(status_code=404, detail="expense not found")
+    return expense
