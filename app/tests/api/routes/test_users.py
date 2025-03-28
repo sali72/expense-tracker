@@ -9,7 +9,7 @@ from app.core.config import settings
 
 @pytest.fixture(scope="function", autouse=True)
 async def clean_users_collection(db: AsyncIOMotorClient):
-    test_db_name = settings.MONGODB_DB + "_test"
+    test_db_name = settings.TEST_DB_NAME
     await db[test_db_name]["users"].delete_many({})
     yield
 
