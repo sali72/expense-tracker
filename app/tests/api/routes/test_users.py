@@ -14,6 +14,13 @@ async def clean_users_collection(db: AsyncIOMotorClient):
     yield
 
 
+def test_test_auth(client: TestClient, auth_headers: dict):
+    response = client.get(
+        "/users/test-auth", headers=auth_headers
+    )
+    assert response.status_code == 200
+
+
 def test_create_user(client: TestClient):
     user_id = str(uuid4())
     response = client.post("/users/", json={"id": user_id, "expense_ids": []})
