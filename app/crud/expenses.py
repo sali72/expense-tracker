@@ -48,12 +48,14 @@ async def update_expense(
     return expense
 
 
-async def delete_expense(*, expense_id: UUID, session) -> bool:
+async def delete_expense(*, expense_id: UUID, user_id: UUID, session) -> Expense | None:
     """
     Delete an expense.
     """
-    expense = await Expense.get(expense_id, session=session)
+    expense = await get_expense_for_user(
+        expense_id=expense_id, user_id=user_id, session=session
+    )
     if expense:
         await expense.delete(session=session)
-        return True
-    return False
+        return expense
+    return None

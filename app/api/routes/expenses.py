@@ -65,3 +65,19 @@ async def update_expense(
     if not expense:
         raise HTTPException(status_code=404, detail="expense not found")
     return expense
+
+
+@router.delete("/{expense_id}", response_model=ExpensePublic)
+async def delete_expense(
+    expense_id: UUID, user_id: UserIDDep, session: Session = Depends(get_db)
+) -> Any:
+    """
+    Delete an expense.
+    """
+    deleted_expense = await expenses.delete_expense(
+        expense_id=expense_id, user_id=user_id, session=session
+    )
+    if not deleted_expense:
+        raise HTTPException(status_code=404, detail="expense not found")
+    
+    return deleted_expense
