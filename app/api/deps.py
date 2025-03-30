@@ -1,6 +1,6 @@
 from collections.abc import AsyncGenerator
 from typing import Annotated
-
+from uuid import UUID
 import jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
@@ -28,7 +28,7 @@ SessionDep = Annotated[AsyncIOMotorClientSession, Depends(get_db)]
 TokenDep = Annotated[str, Depends(reusable_oauth2)]
 
 
-def get_token(token: TokenDep) -> str:
+def get_token(token: TokenDep) -> UUID:
     try:
         payload = jwt.decode(
             token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
@@ -39,6 +39,6 @@ def get_token(token: TokenDep) -> str:
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Could not validate credentials",
         )
-    return payload["sub"]
+    return UUID(payload["sub"])
 
-UserIDDep = Annotated[str, Depends(get_token)]
+UserIDDep = Annotated[UUID, Depends(get_token)]

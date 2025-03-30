@@ -20,16 +20,15 @@ async def get_expenses(*, user_id: UUID, session) -> list[Expense]:
     """
     Get all expenses for a user.
     """
-    return await Expense.find({"user_id": user_id}, session=session).to_list()
+    return await Expense.find(Expense.user_id == user_id, session=session).to_list()
 
 
 async def get_expense_for_user(*, expense_id: UUID, user_id: UUID, session) -> Expense:
     """
     Get an expense by id for a user.
     """
-    print(">>>>>> >>>>>> >>>>>> ", expense_id, user_id)
     return await Expense.find_one(
-        {"_id": expense_id, "user_id": user_id}, session=session
+        Expense.id == expense_id and Expense.user_id == user_id, session=session
     )
 
 

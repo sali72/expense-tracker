@@ -1,5 +1,5 @@
 from typing import Any, List
-
+from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 from motor.motor_asyncio import AsyncIOMotorClientSession as Session
 
@@ -39,7 +39,7 @@ async def get_expense(
     Get an expense by id.
     """
     expense = await expenses.get_expense_for_user(
-        expense_id=expense_id, user_id=user_id, session=session
+        expense_id=UUID(expense_id), user_id=user_id, session=session
     )
     if not expense:
         raise HTTPException(status_code=404, detail="expense not found")
