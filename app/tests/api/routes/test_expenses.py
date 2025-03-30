@@ -105,3 +105,24 @@ def test_update_nonexistent_expense(client: TestClient, auth_headers: dict):
         headers=auth_headers,
     )
     assert response.status_code == 404
+
+
+def test_delete_expense(client: TestClient, auth_headers: dict):
+    response = client.post(
+        "/expenses/",
+        json={"amount": 100, "description": "Test expense"},
+        headers=auth_headers,
+    )
+    assert response.status_code == 200
+    data = response.json()
+    expense_id = data["id"]
+
+    response = client.delete(f"/expenses/{expense_id}", headers=auth_headers)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["id"] == expense_id
+
+
+def test_delete_nonexistent_expense(client: TestClient, auth_headers: dict):
+    response = client.delete(f"/expenses/{str(uuid4())}", headers=auth_headers)
+    assert response.status_code == 404
