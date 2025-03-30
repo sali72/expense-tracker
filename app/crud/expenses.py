@@ -32,13 +32,17 @@ async def get_expense_for_user(*, expense_id: UUID, user_id: UUID, session) -> E
     )
 
 
-async def update_expense(*, expense_id: UUID, update_data: dict, session) -> Expense:
+async def update_expense(
+    *, expense_id: UUID, user_id: UUID, update_data: dict, session
+) -> Expense:
     """
     Update an expense.
     """
-    expense = await Expense.get(expense_id, session=session)
+    expense = await get_expense_for_user(
+        expense_id=expense_id, user_id=user_id, session=session
+    )
     if expense:
-        for key, value in update_data.items():
+        for key, value in update_data.model_dump(exclude_unset=True).items():
             setattr(expense, key, value)
         await expense.save(session=session)
     return expense

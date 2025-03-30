@@ -76,8 +76,8 @@ class ExpenseCreate(ExpenseBase):
 
 
 class ExpenseUpdate(ExpenseBase):
-    amount: float | None
-    tag: ExpenseTag | None
+    amount: float | None = None
+    tag: ExpenseTag | None = None
 
 
 class ExpensePublic(ExpenseBase):
