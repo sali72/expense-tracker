@@ -28,7 +28,7 @@ async def get_expense_for_user(*, expense_id: UUID, user_id: UUID, session) -> E
     Get an expense by id for a user.
     """
     return await Expense.find_one(
-        Expense.id == expense_id and Expense.user_id == user_id, session=session
+        Expense.id == expense_id, Expense.user_id == user_id, session=session
     )
 
 
