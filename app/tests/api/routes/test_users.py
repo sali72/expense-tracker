@@ -1,23 +1,21 @@
 from uuid import uuid4
 
-import pytest
+import pytest_asyncio
 from fastapi.testclient import TestClient
-from motor.motor_asyncio import AsyncIOMotorClient
 
 from app.core.config import settings
+from app.tests.conftest import get_test_db_client
 
 
-@pytest.fixture(scope="function", autouse=True)
-async def clean_users_collection(db: AsyncIOMotorClient):
-    test_db_name = settings.TEST_DB_NAME
-    await db[test_db_name]["users"].delete_many({})
-    yield
+@pytest_asyncio.fixture(scope="function", autouse=True)
+async def clean_users_collection():
+    client = await get_test_db_client()
+    db = client[settings.TEST_DB_NAME]
+    await db["users"].delete_many({})
 
 
 def test_test_auth(client: TestClient, auth_headers: dict):
-    response = client.get(
-        "/users/test-auth", headers=auth_headers
-    )
+    response = client.get("/users/test-auth", headers=auth_headers)
     assert response.status_code == 200
 
 

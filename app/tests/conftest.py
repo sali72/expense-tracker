@@ -2,30 +2,39 @@ from collections.abc import AsyncGenerator
 
 import pytest
 import requests
+import pytest_asyncio
 from beanie import init_beanie
 from fastapi.testclient import TestClient
-from motor.motor_asyncio import AsyncIOMotorClient
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorClientSession
 
+from app.api.deps import get_db
 from app.core.config import settings
 from app.main import app
 from app.models import Expense, User
 
 
-@pytest.fixture(scope="session", autouse=True)
-async def db() -> AsyncGenerator[AsyncIOMotorClient, None]:
+async def get_test_db_client():
     client = AsyncIOMotorClient(settings.MONGODB_URI)
-    test_db_name = settings.MONGODB_DB + "_test"
-    await init_beanie(database=client[test_db_name], document_models=[User, Expense])
-    yield client
-    # Clean up: drop the test database after all tests
-    await client.drop_database(test_db_name)
-    await client.close()
+    await init_beanie(
+        database=client[settings.TEST_DB_NAME], document_models=[User, Expense]
+    )
+    return client
+
+async def get_test_db_session() -> AsyncGenerator[AsyncIOMotorClientSession, None, None]:
+    client = await get_test_db_client()
+    async with await client.start_session() as session:
+        print("session", session)
+        yield session
 
 
-@pytest.fixture(scope="session")
-def client():
+@pytest_asyncio.fixture(scope="session")
+async def client():
+    app.dependency_overrides[get_db] = get_test_db_session
     with TestClient(app) as tc:
         yield tc
+    
+    client = await get_test_db_client()
+    await client.drop_database(settings.TEST_DB_NAME)
 
 
 @pytest.fixture(scope="session")
