@@ -14,7 +14,7 @@ from app.models import Expense, User
 
 
 async def get_test_db_client():
-    client = AsyncIOMotorClient(settings.MONGODB_URI)
+    client = AsyncIOMotorClient(settings.MONGODB_LOCAL_URI)
     await init_beanie(
         database=client[settings.TEST_DB_NAME], document_models=[User, Expense]
     )

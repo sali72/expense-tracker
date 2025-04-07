@@ -6,8 +6,13 @@ from app.models import Expense, User
 
 
 async def get_client():
-    client = AsyncIOMotorClient(settings.MONGODB_URI)
+    if settings.DB_MODE == "local":
+        client = AsyncIOMotorClient(settings.MONGODB_LOCAL_URI)
+    elif settings.DB_MODE == "container":
+        client = AsyncIOMotorClient(settings.MONGODB_DOCKER_HOST)
+    else:
+        raise ValueError("Invalid DB mode")
     await init_beanie(
-        database=client[settings.MONGODB_DB], document_models=[User, Expense]
+        database=client[settings.MONGODB_DB_NAME], document_models=[User, Expense]
     )
     return client
