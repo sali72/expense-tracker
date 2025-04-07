@@ -1,0 +1,47 @@
+services:
+
+  mongodb:
+    image: mongo:4.2.3-bionic
+    restart: always
+    volumes:
+      - mongodb_data:/data/db
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - expense-tracker-network
+      
+  
+  expense-tracker:
+    image: expense-tracker
+    build:
+      context: .
+    ports:
+      - 8000:8000
+    
+    # For development {
+    volumes:
+      - ./app:/app/app
+      - ./tests:/app/tests
+    command: fastapi dev --host 0.0.0.0 --reload app/main.py
+    # } For development
+
+    depends_on:
+      - mongodb
+    networks:
+      - expense-tracker-network
+    # env_file:
+    #   - .env
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  expense-tracker-network:
+
+volumes:
+  mongodb_data:
