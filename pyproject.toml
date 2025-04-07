@@ -1,0 +1,22 @@
+[project]
+name = "app"
+version = "0.1.0"
+description = "Expense Tracker"
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "fastapi[standard]<1.0.0,>=0.115.12",
+    "beanie>=1.29.0",
+    "motor<4.0.0,>=3.7.0",
+    "pydantic<3.0.0,>=2.11.2",
+    "pydantic_settings<3.0.0,>=2.8.1",
+    "PyJWT<3.0.0,>=2.10.1",
+    "requests<3.0.0,>=2.32.3",
+]
+[tool.uv]
+dev-dependencies = [
+    "pytest_asyncio<1.0.0,>=0.26.0",
+    "pytest<9.0.0,>=8.3.5",
+]
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
