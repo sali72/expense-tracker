@@ -15,6 +15,7 @@ A robust and scalable expense tracking microservice built with FastAPI and Mongo
 
 - **Framework**: FastAPI
 - **Database**: MongoDB
+- **ORM**: Beanie (MongoDB ODM)
 - **Authentication**: External Auth Service
 - **Containerization**: Docker
 - **Testing**: pytest
