@@ -12,8 +12,74 @@ services:
         max-file: "3"
     networks:
       - expense-tracker-network
-      
-  
+
+  # Auth Service Components
+  auth-db:
+    image: postgres:12
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      retries: 5
+      timeout: 10s
+      start_period: 30s
+    volumes:
+      - auth-db-data:/var/lib/postgresql/data/pgdata
+    env_file:
+      - .auth-service.env
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
+      - POSTGRES_USER=${POSTGRES_USER?Variable not set}
+      - POSTGRES_DB=${POSTGRES_DB?Variable not set}
+    networks:
+      - expense-tracker-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  auth-prestart:
+    image: sali72/auth-service:latest
+    networks:
+      - expense-tracker-network
+    depends_on:
+      auth-db:
+        condition: service_healthy
+        restart: true
+    command: bash scripts/prestart.sh
+    env_file:
+      - .auth-service.env
+    environment:
+      - POSTGRES_SERVER=auth-db
+      - POSTGRES_PORT=${POSTGRES_PORT}
+
+  auth-service:
+    container_name: auth-service
+    image: sali72/auth-service:latest
+    restart: always
+    networks:
+      - expense-tracker-network
+    ports:
+      - 5000:8000
+    depends_on:
+      auth-db:
+        condition: service_healthy
+        restart: true
+      auth-prestart:
+        condition: service_completed_successfully
+    env_file:
+      - .auth-service.env
+    environment:
+      - POSTGRES_SERVER=auth-db
+      - POSTGRES_PORT=${POSTGRES_PORT}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
   expense-tracker:
     image: expense-tracker
     build:
@@ -27,21 +93,35 @@ services:
       - ./tests:/app/tests
     command: fastapi dev --host 0.0.0.0 --reload app/main.py
     # } For development
-
+    environment:
+      - AUTH_SERVICE_URL=http://auth-service:8000
+    env_file:
+      - .env
     depends_on:
       - mongodb
+      - auth-service
     networks:
       - expense-tracker-network
-    # env_file:
-    #   - .env
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
 
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - expense-tracker
+    networks:
+      - expense-tracker-network
+
 networks:
   expense-tracker-network:
 
 volumes:
   mongodb_data:
+  auth-db-data:
