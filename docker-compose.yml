@@ -61,8 +61,6 @@ services:
     restart: always
     networks:
       - expense-tracker-network
-    ports:
-      - 5000:8000
     depends_on:
       auth-db:
         condition: service_healthy
@@ -84,8 +82,8 @@ services:
     image: expense-tracker
     build:
       context: .
-    ports:
-      - 8000:8000
+    # ports:
+    #   - 8000:8000
     
     # For development {
     volumes:
