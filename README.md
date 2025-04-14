@@ -1,23 +1,26 @@
 # 🏦 Expense Tracker Microservice
 
-A robust and scalable expense tracking microservice built with FastAPI and MongoDB, following industry best practices.
+A robust and scalable expense tracking microservice built with FastAPI and MongoDB, with nginx as a reverse proxy and integration with an external authentication service.
 
 ## 🚀 Features
 
 - 🔐 Secure authentication integration with external auth service
 - 💾 MongoDB-based data persistence
-- 🐳 Docker containerization
+- 🐳 Docker containerization for easy deployment
 - 📊 Comprehensive E2E testing
 - 🔄 Asynchronous operations
 - 📝 Clean architecture and code organization
+- 🔐 Reverse proxy with nginx for unified access and security
+- 🔀 Microservices architecture with separate auth service
 
 ## 🛠️ Tech Stack
 
 - **Framework**: FastAPI
-- **Database**: MongoDB
+- **Database**: MongoDB (for expense tracker), PostgreSQL (for auth service)
 - **ORM**: Beanie (MongoDB ODM)
 - **Authentication**: External Auth Service
-- **Containerization**: Docker
+- **Containerization**: Docker & Docker Compose
+- **Reverse Proxy**: Nginx
 - **Testing**: pytest
 - **Package Management**: uv
 
@@ -37,16 +40,20 @@ A robust and scalable expense tracking microservice built with FastAPI and Mongo
    ```
 
 2. **Environment Setup**
-   - Create a `.env` file based on the configuration in `app/core/config.py`
-   - Set up your MongoDB connection details
-   - Configure the auth service URL
+   - Create a `.env` file for the expense tracker service configuration
+   - Create a `.auth-service.env` file for the auth service configuration
+   - Configure your MongoDB and PostgreSQL connection details
 
 3. **Run with Docker**
    ```bash
    docker-compose up --build
    ```
 
-4. **Run Tests**
+4. **Access Services**
+   - Expense Tracker API: http://localhost/expense-tracker
+   - Auth Service API: http://localhost/auth-service
+
+5. **Run Tests**
    ```bash
    pytest
    ```
@@ -54,8 +61,12 @@ A robust and scalable expense tracking microservice built with FastAPI and Mongo
 ## 📚 API Documentation
 
 Once the service is running, access the interactive API documentation at:
-- Swagger UI: `http://localhost:8000/docs`
-- ReDoc: `http://localhost:8000/redoc`
+- Expense Tracker API: `http://localhost/expense-tracker/docs`
+- Auth Service API: `http://localhost/auth-service/docs`
+
+Both services are proxied through nginx on port 80:
+- The expense tracker service is available at the `/expense-tracker/` path
+- The authentication service is available at the `/auth-service/` path
 
 ## 🏗️ Project Structure
 
