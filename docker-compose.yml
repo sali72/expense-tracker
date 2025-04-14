@@ -59,6 +59,8 @@ services:
     container_name: auth-service
     image: sali72/auth-service:latest
     restart: always
+    # For development
+    command: fastapi dev app/main.py --host 0.0.0.0 --root-path /auth-service
     networks:
       - expense-tracker-network
     depends_on:
@@ -89,7 +91,7 @@ services:
     volumes:
       - ./app:/app/app
       - ./tests:/app/tests
-    command: fastapi dev --host 0.0.0.0 --reload app/main.py
+    command: fastapi dev --host 0.0.0.0 --reload app/main.py --root-path /expense-tracker
     # } For development
     environment:
       - AUTH_SERVICE_URL=http://auth-service:8000
