@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     
     SECRET_KEY: str = "CHANGE THIS IN PRODUCTION"
     ALGORITHM: str = "HS256"
-    AUTH_SERVICE_URL: str = "http://127.0.0.1:5000"
+    AUTH_SERVICE_URL: str = "http://auth-service:8000"
     AUTH_SERVICE_TOKEN_URL: str = f"{AUTH_SERVICE_URL}/api/v1/login/access-token"
     
     TEST_DB_NAME: str = MONGODB_DB_NAME + "_test"
