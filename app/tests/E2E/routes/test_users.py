@@ -4,7 +4,7 @@ import pytest_asyncio
 from fastapi.testclient import TestClient
 
 from app.core.config import settings
-from app.tests.conftest import get_test_db_client
+from app.tests.E2E.conftest import get_test_db_client
 
 
 @pytest_asyncio.fixture(scope="function", autouse=True)

@@ -6,11 +6,13 @@ import pytest_asyncio
 from beanie import init_beanie
 from fastapi.testclient import TestClient
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorClientSession
+import uuid 
 
 from app.api.deps import get_db
 from app.core.config import settings
 from app.main import app
 from app.models import Expense, User
+from app.tests.utils import generate_test_access_token
 
 
 async def get_test_db_client():
@@ -64,7 +66,8 @@ def mock_token():
     """
     Provides a mock JWT token for testing without auth service dependency.
     """
-    yield settings.MOCK_TOKEN
+    user_id = str(uuid.uuid4())
+    yield generate_test_access_token(user_id)
 
 
 @pytest.fixture(scope="session")
