@@ -16,6 +16,7 @@ dependencies = [
 dev-dependencies = [
     "pytest_asyncio<1.0.0,>=0.26.0",
     "pytest<9.0.0,>=8.3.5",
+    "locust<3.0.0,>=2.34.1",
 ]
 [build-system]
 requires = ["hatchling"]
