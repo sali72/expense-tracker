@@ -65,6 +65,7 @@ class NormalUser(HttpUser):
                 self.client.get(
                     settings.EXPENSE_TRACKER_URL + f"/expenses/{expense_id}",
                     headers=self.headers,
+                    name="/expenses/{id}"
                 )
 
     @task(1)
@@ -87,6 +88,7 @@ class NormalUser(HttpUser):
                     settings.EXPENSE_TRACKER_URL + f"/expenses/{expense_id}",
                     json=update_data,
                     headers=self.headers,
+                    name="/expenses/{id}"
                 )
 
     @task(1)
@@ -102,5 +104,6 @@ class NormalUser(HttpUser):
                 self.client.delete(
                     settings.EXPENSE_TRACKER_URL + f"/expenses/{expense_id}",
                     headers=self.headers,
+                    name="/expenses/{id}"
                 )
 
