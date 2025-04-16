@@ -84,7 +84,7 @@ class ExpensePublic(ExpenseBase):
     id: UUID = Field(default_factory=uuid4, description="Expense ID")
 
 
-class ExpensesPublic(ExpenseBase):
+class ExpensesPublic(BaseModel):
     data: list[ExpensePublic]
     count: int
 
