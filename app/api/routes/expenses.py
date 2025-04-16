@@ -1,11 +1,11 @@
-from typing import Any, List
+from typing import Any
 from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 from motor.motor_asyncio import AsyncIOMotorClientSession as Session
 
 from app.api.deps import UserIDDep, get_db
 from app.crud import expenses
-from app.models import ExpenseCreate, ExpensePublic, ExpenseUpdate
+from app.models import ExpenseCreate, ExpensePublic, ExpenseUpdate, ExpensesPublic
 
 router = APIRouter(prefix="/expenses", tags=["expenses"])
 
@@ -23,12 +23,24 @@ async def create_expense(
     return expense
 
 
-@router.get("/", response_model=List[ExpensePublic])
-async def get_expenses(user_id: UserIDDep, session: Session = Depends(get_db)) -> Any:
+@router.get("/", response_model=ExpensesPublic)
+async def get_expenses(
+    user_id: UserIDDep,
+    skip: int = 0,
+    limit: int = 100,
+    session: Session = Depends(get_db),
+) -> Any:
     """
-    Get all expenses for a user.
+    Get paginated expenses for a user.
     """
-    return await expenses.get_expenses(user_id=user_id, session=session)
+    expenses_list, total = await expenses.get_expenses(
+        user_id=user_id, session=session, skip=skip, limit=limit
+    )
+
+    return ExpensesPublic(
+        data=[ExpensePublic(**expense.model_dump()) for expense in expenses_list],
+        count=total,
+    )
 
 
 @router.get("/{expense_id}", response_model=ExpensePublic)
@@ -79,5 +91,5 @@ async def delete_expense(
     )
     if not deleted_expense:
         raise HTTPException(status_code=404, detail="expense not found")
-    
+
     return deleted_expense

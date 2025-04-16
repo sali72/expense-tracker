@@ -2,7 +2,7 @@ from uuid import UUID
 
 from motor.motor_asyncio import AsyncIOMotorClientSession as Session
 
-from app.models import Expense, ExpenseCreate
+from app.models import Expense, ExpenseCreate, ExpensesPublic, ExpensePublic
 
 
 async def create_expense(
@@ -16,11 +16,22 @@ async def create_expense(
     return expense
 
 
-async def get_expenses(*, user_id: UUID, session) -> list[Expense]:
+async def get_expenses(
+    *, user_id: UUID, session, skip: int = 0, limit: int = 100
+) -> tuple[list[Expense], int]:
     """
-    Get all expenses for a user.
+    Get paginated expenses for a user.
+    Returns a tuple of (expenses_list, total_count)
     """
-    return await Expense.find(Expense.user_id == user_id, session=session).to_list()
+    query = Expense.find(Expense.user_id == user_id, session=session)
+
+    # Get total count
+    total = await query.count()
+    
+    # Apply pagination
+    expenses_list = await query.skip(skip).limit(limit).to_list()
+
+    return expenses_list, total
 
 
 async def get_expense_for_user(*, expense_id: UUID, user_id: UUID, session) -> Expense:
