@@ -2,7 +2,7 @@ from uuid import UUID
 
 from motor.motor_asyncio import AsyncIOMotorClientSession as Session
 
-from app.models import Expense, ExpenseCreate, ExpensesPublic, ExpensePublic
+from app.models import Expense, ExpenseCreate
 
 
 async def create_expense(

@@ -145,8 +145,8 @@ def test_get_expenses_pagination(client: TestClient, auth_headers: dict):
     response = client.get("/expenses/?skip=0&limit=10", headers=auth_headers)
     assert response.status_code == 200
     data = response.json()
-    assert data["count"] == 15  # Total count should be 15
-    assert len(data["data"]) == 10  # But only 10 items in the response
+    assert data["count"] == 15
+    assert len(data["data"]) == 10
     
     # Test second page with 5 items
     response = client.get("/expenses/?skip=10&limit=10", headers=auth_headers)
