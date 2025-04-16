@@ -7,7 +7,7 @@ A robust and scalable expense tracking microservice built with FastAPI and Mongo
 - 🔐 Secure authentication integration with external auth service
 - 💾 MongoDB-based data persistence
 - 🐳 Docker containerization for easy deployment
-- 📊 Comprehensive E2E testing
+- 📊 Comprehensive testing (E2E, integration, and load testing with Locust)
 - 🔄 Asynchronous operations
 - 📝 Clean architecture and code organization
 - 🔐 Reverse proxy with nginx for unified access and security
@@ -21,7 +21,7 @@ A robust and scalable expense tracking microservice built with FastAPI and Mongo
 - **Authentication**: External Auth Service
 - **Containerization**: Docker & Docker Compose
 - **Reverse Proxy**: Nginx
-- **Testing**: pytest
+- **Testing**: pytest, Locust (load testing)
 - **Package Management**: uv
 
 ## 📋 Prerequisites
@@ -53,10 +53,6 @@ A robust and scalable expense tracking microservice built with FastAPI and Mongo
    - Expense Tracker API: http://localhost/expense-tracker
    - Auth Service API: http://localhost/auth-service
 
-5. **Run Tests**
-   ```bash
-   pytest
-   ```
 
 ## 📚 API Documentation
 
@@ -67,6 +63,22 @@ Once the service is running, access the interactive API documentation at:
 Both services are proxied through nginx on port 80:
 - The expense tracker service is available at the `/expense-tracker/` path
 - The authentication service is available at the `/auth-service/` path
+
+## 🧪 Testing
+
+### E2E & Integration Tests
+```bash
+pytest
+```
+
+### Load Testing
+```bash
+# Web UI (http://localhost:8089)
+locust -f app/tests/load/locustfile.py --host=http://localhost/expense-tracker
+
+# Headless mode
+locust -f app/tests/load/locustfile.py --headless -u 100 -r 10 --host=http://localhost/expense-tracker
+```
 
 ## 🏗️ Project Structure
 
